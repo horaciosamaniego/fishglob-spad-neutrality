@@ -1,0 +1,9 @@
+# Versions used to produce the published results (Python 3.12).
+# Later versions will usually work; pyreadr is the one to pin if the survey
+# files stop parsing, and scipy below 1.11 loses the Benjamini-Hochberg step.
+numpy==2.4.4
+pandas==3.0.2
+scipy==1.17.1
+matplotlib==3.10.9
+pyreadr==0.5.6
+pyarrow==25.0.1

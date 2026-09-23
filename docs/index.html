@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is relative abundance Beta distributed for neutral reasons?</title>
+<meta name="description" content="Data and analysis code for a test of the neutral prediction that all species share one Beta concentration parameter, across fourteen bottom-trawl surveys.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#eef1f3; --ink:#0f1f2b; --deep:#1c5d8f; --warm:#b4571f;
+  --rule:#c6ced4; --muted:#5a6b78; --panel:#e4e9ec;
+  --display:'Archivo',system-ui,sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:47rem;margin:0 auto;padding:0 1.5rem}
+a{color:var(--deep);text-decoration:none;border-bottom:1px solid rgba(28,93,143,.35)}
+a:hover{border-bottom-color:var(--deep)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--warm);outline-offset:3px;border-radius:2px}
+
+.eyebrow{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted);
+}
+header{padding:4.5rem 0 0}
+h1{
+  font-family:var(--display); font-weight:800; font-size:clamp(2.1rem,5.4vw,3.4rem);
+  line-height:1.04; letter-spacing:-.025em; margin:.9rem 0 0; max-width:20ch;
+}
+.byline{font-size:.95rem;color:var(--muted);margin:1.1rem 0 0;line-height:1.7}
+.byline em{font-style:normal;color:var(--ink)}
+.byline.affil{line-height:1.4;font-size:.7rem;color:var(--muted)}
+
+/* ---------- signature: the Taylor exponent axis ---------- */
+.axis{margin:3.5rem 0 0;padding:2rem 0 1.6rem;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.axis figcaption{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.9rem}
+.scale{position:relative;height:120px}
+.rail{position:absolute;left:0;right:0;top:54px;height:1px;background:var(--rule)}
+.mark{position:absolute;top:34px;width:1px;height:42px;background:var(--ink)}
+.mark.neutral{background:var(--warm);height:56px;top:27px;width:2px}
+.mark.cv{background:var(--muted);height:42px;border-left:1px dashed var(--muted);background:none}
+.tick{position:absolute;top:44px;width:2px;height:22px;background:var(--deep);opacity:.82;border-radius:1px}
+.lab{position:absolute;font-family:var(--mono);font-size:.7rem;color:var(--muted);white-space:nowrap;transform:translateX(-50%)}
+.lab.top{top:0}
+.lab.bot{top:86px}
+.lab.warm{color:var(--warm);font-weight:500}
+.lab.deep{color:var(--deep);font-weight:500}
+
+h2{font-family:var(--display);font-weight:700;font-size:1.28rem;letter-spacing:-.01em;margin:3.2rem 0 .7rem}
+p{margin:0 0 1.05rem}
+code,kbd{font-family:var(--mono);font-size:.86em;background:var(--panel);padding:.12em .35em;border-radius:3px}
+pre{background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:1rem 1.1rem;overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.55}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.9rem}
+th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--rule)}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.num{font-family:var(--mono);font-size:.84rem}
+.lede{font-size:1.1rem;line-height:1.58}
+figure.plate{margin:2rem 0;padding:0}
+figure.plate img{width:100%;height:auto;border:1px solid var(--rule);border-radius:4px;background:#fff}
+figure.plate figcaption{font-size:.84rem;color:var(--muted);margin-top:.6rem;line-height:1.5}
+footer{margin:4rem 0 3rem;padding-top:1.4rem;border-top:1px solid var(--rule);font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Data &amp; analysis code</div>
+  <h1>Is relative abundance Beta distributed for neutral reasons?</h1>
+  <p class="byline">
+    <em>The species proportional abundance distribution is Beta but not Dirichlet:
+    a test of neutrality in fourteen bottom-trawl surveys</em><br>
+    Horacio Samaniego<sup>1</sup>, Pablo A. Marquet<sup>2,3</sup>, Malin L. Pinsky<sup>4</sup>
+  </p>
+  <p class="byline affil">
+    <sup>1</sup> Laboratorio de Ecoinformática, Instituto de Conservación, Biodiversidad y Territorio,
+    Universidad Austral de Chile, Valdivia, Chile.<br>
+    <sup>2</sup> Departamento de Ecología, Pontificia Universidad Católica de Chile, Santiago, Chile.<br>
+    <sup>3</sup> The Santa Fe Institute, Santa Fe, NM, USA.<br>
+    <sup>4</sup> University of California, Santa Cruz, CA, USA.
+  </p>
+</header>
+
+<figure class="axis">
+  <figcaption>Taylor exponent, one tick per survey unit</figcaption>
+  <div class="scale">
+    <div class="rail"></div>
+
+    <div class="mark neutral" style="left:8.3%"></div>
+    <div class="lab top warm" style="left:8.3%">neutral prediction</div>
+    <div class="lab bot warm" style="left:8.3%">1.0</div>
+
+    <div class="mark cv" style="left:91.7%"></div>
+    <div class="lab top" style="left:91.7%">constant CV</div>
+    <div class="lab bot" style="left:91.7%">2.0</div>
+
+    <div class="tick" style="left:66.7%"></div>
+    <div class="tick" style="left:67.5%"></div>
+    <div class="tick" style="left:68.3%"></div>
+    <div class="tick" style="left:70.0%"></div>
+    <div class="tick" style="left:70.8%"></div>
+    <div class="tick" style="left:73.3%"></div>
+    <div class="tick" style="left:74.2%"></div>
+    <div class="tick" style="left:75.8%"></div>
+    <div class="tick" style="left:77.5%"></div>
+    <div class="tick" style="left:77.6%"></div>
+    <div class="tick" style="left:80.8%"></div>
+    <div class="tick" style="left:82.5%"></div>
+    <div class="tick" style="left:84.2%"></div>
+    <div class="tick" style="left:90.8%"></div>
+    <div class="lab bot deep" style="left:77.5%">observed, 14 of 14</div>
+  </div>
+</figure>
+
+<p class="lede">Neutral theory predicts that the relative abundance of species follows a
+Beta distribution, and that the whole assemblage follows a Dirichlet. The Dirichlet
+carries a constraint the Beta alone does not: its concentration parameter is a
+community-level sum, so every species must share one value. It does not hold in any
+survey we examined.</p>
+
+<h2>What this repository contains</h2>
+
+<p>Annual biomass shares for fourteen survey units drawn from six scientific
+bottom-trawl programmes across four ocean basins, together with the code that fits a
+Beta distribution to each species, tests whether the concentration parameters are
+equal, and calibrates that test against bootstraps simulating autocorrelated Jacobi
+paths rather than an asymptotic reference.</p>
+
+<p>The headline results are that the Beta is an adequate marginal description, that
+the shared concentration is rejected in every survey unit, and that the failure takes
+the form of a Taylor exponent near 2 where neutral drift requires 1 — so rare and
+common species fluctuate by similar proportions of their own abundance.</p>
+
+<h2>Reproducing the results</h2>
+
+<pre><code>git clone https://github.com/horaciosamaniego/fishglob-spad-neutrality.git
+cd fishglob-spad-neutrality
+pip install -r requirements.txt
+make all          # or: python src/run_analysis.py</code></pre>
+
+<p>The first run downloads survey files from the FishGlob repository into
+<code>~/.fishglob</code>. A reduced smoke test, <code>make quick</code>, finishes in
+about three minutes. The full pipeline takes roughly forty. Seeds are fixed, so the
+likelihood ratio, the fitted parameters and the Taylor exponents reproduce exactly;
+bootstrap quantiles and power estimates carry the usual Monte Carlo variation.</p>
+
+<h2>The result</h2>
+
+<table>
+<tr><th>Quantity</th><th>Value</th></tr>
+<tr><td>Survey units rejecting a shared concentration</td><td class="num">14 of 14</td></tr>
+<tr><td>Taylor exponent</td><td class="num">1.70 – 1.99 (median 1.80)</td></tr>
+<tr><td>Within two standard errors of the neutral value</td><td class="num">0 of 14</td></tr>
+<tr><td>Fitted concentration spread, within a region</td><td class="num">384× – 11,166×</td></tr>
+<tr><td>Median <i>α</i> across regions</td><td class="num">0.80 – 2.41</td></tr>
+</table>
+
+<figure class="plate">
+  <img src="nu_test_across_regions.png"
+       alt="Taylor exponents with confidence intervals for fourteen survey units, none near the neutral value of one; and the spread of alpha against the spread of nu for each unit.">
+  <figcaption>Every region scales near 2, none near the neutral value of 1. In all of
+  them <i>α</i> is the tight parameter and <i>ν</i> the loose one, which is why the
+  concentration cannot be shared.</figcaption>
+</figure>
+
+<h2>Data</h2>
+
+<p>All survey data come from
+<a href="https://github.com/fishglob/FishGlob_data">FishGlob</a> v2.1.0
+(<a href="https://doi.org/10.1038/s41597-023-02866-w">Maureaud et al. 2024</a>,
+CC BY 4.0), downloaded at run time rather than redistributed here. The single file
+shipped in <code>data/</code> is the derived share matrix for the pilot region, so the
+analysis can be re-run without network access.</p>
+
+<p>FishGlob asks that users read its disclaimer and citation policy and notify the
+consortium of the datasets used, so that the data providers receive credit.</p>
+
+<h2>Citation</h2>
+
+<p>See <code>CITATION.cff</code>. Please cite the paper rather than this repository
+where the two would serve the same purpose.</p>
+
+<footer>
+  Code released under the MIT licence.
+  <a href="https://github.com/horaciosamaniego/fishglob-spad-neutrality">Repository on GitHub</a>.
+</footer>
+
+</div>
+</body>
+</html>

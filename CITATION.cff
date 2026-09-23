@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite the paper below."
+title: "The species proportional abundance distribution is Beta but not Dirichlet: analysis code"
+type: software
+authors:
+  - family-names: Samaniego
+    given-names: Horacio
+    affiliation: "Universidad Austral de Chile"
+    orcid: "https://orcid.org/0000-0002-2485-9827"
+  - family-names: Marquet
+    given-names: Pablo A.
+    affiliation: "Pontificia Universidad Católica de Chile; The Santa Fe Institute"
+  - family-names: Pinsky
+    given-names: Malin L.
+    affiliation: "University of California, Santa Cruz"
+license: MIT
+repository-code: "https://github.com/horaciosamaniego/fishglob-spad-neutrality"
+preferred-citation:
+  type: article
+  title: "The species proportional abundance distribution is Beta but not Dirichlet: a test of neutrality in fourteen bottom-trawl surveys"
+  authors:
+    - family-names: Samaniego
+      given-names: Horacio
+    - family-names: Marquet
+      given-names: Pablo A.
+    - family-names: Pinsky
+      given-names: Malin L.
+  year: 2026
