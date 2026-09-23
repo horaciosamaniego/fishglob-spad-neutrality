@@ -4,13 +4,16 @@ Data and analysis code for *The species proportional abundance distribution is B
 
 Samaniego, H. $^1$, Marquet, P.A. $^{2,3}$, & Pinsky, M.L. $^4$
 
-$^1$ Laboratorio de Ecoinformática, Instituto de Conservación, Biodiversidad y Territorio, Universidad Austral de Chile, Campus Isla Teja, Valdivia, Chile.
 
-$^2$ Departamento de Ecología, Facultad de Ciencias Biológicas, Pontificia Universidad Católica de Chile, Santiago, Chile.
+$^1$ Instituto de Conservación, Biodiversidad y Territorio, Universidad Austral de Chile, Valdivia, Chile.\
 
-$^3$ The Santa Fe Institute, 1399 Hyde Park Road, Santa Fe, NM 87501, USA.
+$^2$ Instituto de Sistemas Complejos de Valparaíso, Valparaíso, Chile.\
 
-$^4$ University of California, Santa Cruz, CA, USA.
+$^3$ Facultad de Ciencias Biológicas, Pontificia Universidad Católica de Chile, Santiago 8331150, Chile; The Santa Fe Institute, 1399 Hyde Park Road, Santa Fe, NM 87501, USA.\
+
+$^4$ Department of Ecology and Evolutionary Biology, University of California Santa Cruz, Santa Cruz, CA 95060.
+
+
 
 
 **Site:** https://horaciosamaniego.github.io/fishglob-spad-neutrality/
